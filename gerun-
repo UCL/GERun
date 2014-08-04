@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Parallel launcher for the various PEs on Legion.
+# Dr Owain Kenway, UCL
+
+# For licensing terms, see LICENSE.txt
+
+# Fail and print useful error if no MPI loaded.
+echo You don\'t appear to have an MPI implementation loaded.  Exiting.

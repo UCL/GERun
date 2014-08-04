@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Parallel launcher for the various PEs on Legion.
+# Dr Owain Kenway, UCL
+
+# For licensing terms, see LICENSE.txt
+
+# This variable should be set by MPI modules:
+# GERUN_LAUNCHER
+
+echo 
+
+cat $GERUN_PATH/gerun-message
+
+echo
+echo "Using environment: $GERUN_LAUNCHER"
+echo "Running on $NSLOTS slots."
+echo "TMPDIR=$TMPDIR"
+echo
+
+if [ -f $TMPDIR/machines ]
+then
+  echo "Contents of machinefile:"
+  cat $TMPDIR/machines
+else
+  echo "WARNING: No machine file."
+fi 
+echo
+
+$GERUN_PATH/gerun-$GERUN_LAUNCHER $*

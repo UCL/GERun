@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Parallel launcher for the various PEs on Legion.
+# Dr Owain Kenway, UCL
+
+# For licensing terms, see LICENSE.txt
+
+mpirun --rsh=ssh -machinefile $TMPDIR/machines -np $NSLOTS $*
