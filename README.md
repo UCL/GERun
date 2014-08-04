@@ -47,7 +47,7 @@ On Legion we use environment modules and so the instructions will be written ass
 
 Provided with the code are:
 
-| MPI              | $GERUN_LANUCHER | Wrapper file       |
+| MPI              | $GERUN_LAUNCHER | Wrapper file       |
 |:---------------- |:--------------- |:------------------ |
 | Qlogic           | qlc             | gerun-qlc          |
 | Intel            | intel           | gerun-intel        |
