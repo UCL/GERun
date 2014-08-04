@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# This script uses qrsh to perform a cp command on each
+# node that a user has allocated.
+
+# This is useful for populating $TMPDIR on multiple nodes.
+
+# Dr Owain Kenway, UCL
+
+# For licensing terms, see LICENSE.txt
+
+sort -u $TMPDIR/machines > $TMPDIR/uniqmachines
+
+cat $TMPDIR/uniqmachines
+
+for a in `cat $TMPDIR/uniqmachines`
+do
+  qrsh -inherit $a "cd `pwd`; /bin/cp $*" &
+  pids="$pids $!"
+done
+
+wait $pids
