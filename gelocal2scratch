@@ -1,0 +1,22 @@
+#!/bin/bash
+# Script to recover $TMPDIR on multiple nodes
+# Dr Owain Kenway, UCL
+
+# For licensing terms, see LICENSE.txt
+
+sort -u $TMPDIR/machines  > $TMPDIR/uniqmachines
+
+cat $TMPDIR/uniqmachines
+
+scratch=/scratch/scratch/`whoami`
+
+mkdir $scratch/$JOB_ID
+
+for a in `cat $TMPDIR/uniqmachines`
+do
+  qrsh -inherit $a "tar -cf $scratch/$JOB_ID/$JOB_ID.$SGE_TASK_ID.$QUEUE.$a.tar $TMPDIR" &
+  pids="$pids $!"
+done
+
+wait $pids
+
