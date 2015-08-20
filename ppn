@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script calculates the number of threads for a mixed mode code.
+# This script calculates the number of processors per node.
 # Dr Owain Kenway, UCL
 
 NSLOTS=${NSLOTS:-1}
