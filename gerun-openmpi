@@ -5,4 +5,4 @@
 
 # For licensing terms, see LICENSE.txt
 
-mpirun -machinefile $TMPDIR/machines -np $NSLOTS $*
+mpirun -machinefile $TMPDIR/machines -np $GERUN_PROCS $*

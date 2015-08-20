@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# This script calculates the number of threads for a mixed mode code.
+# Dr Owain Kenway, UCL
+
+NSLOTS=${NSLOTS:-1}
+NHOSTS=${NHOSTS:-1}
+
+echo $[$NSLOTS/$NHOSTS]

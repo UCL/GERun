@@ -12,9 +12,16 @@ echo
 
 cat $GERUN_PATH/gerun-message
 
+# We need to support mixed mode code on new Legion.
+
+OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
+GERUN_PROCS=$[$NSLOTS/$OMP_NUM_THREADS]
+export OMP_NUM_THREADS
+export GERUN_PROCS
+
 echo
 echo "Using environment: $GERUN_LAUNCHER"
-echo "Running on $NSLOTS slots."
+echo "Running on $GERUN_PROCS slots."
 echo "TMPDIR=$TMPDIR"
 echo
 
