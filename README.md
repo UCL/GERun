@@ -34,7 +34,7 @@ depending on their MPI implementation with:
 gerun $HOME/src/madscience/mad
 ```
 
-GERun version iii supports mixed mode codes in some MPI environments (Intel MPI, OpenMPI *without SGE integration*) by running $NSLOTS/$OMP\_NUM\_THREADS MPI tasks, and provides a tool "ppn" which calculates the number of processors per node.  This means that on the new Research Computing OS software stack you can portably (over the node types in the cluster) run with OpenMP threads within a node, MPI between a node should you desire by doing this:
+GERun version iii supports mixed mode codes in some MPI environments (Intel MPI, OpenMPI *without SGE integration*) by running $NSLOTS/$OMP\_NUM\_THREADS MPI processes, and provides a tool "ppn" which calculates the number of processors per node.  This means that on the new Research Computing OS software stack you can portably (over the node types in the cluster) run with OpenMP threads within a node, MPI between a node should you desire by doing this:
 
 ```bash
 export OMP_NUM_THREADS=`ppn`
@@ -48,6 +48,8 @@ export OMP_NUM_THREADS=2
 gerun $HOME/src/madscience/mad
 ```
 
+Gerun will then run $NSLOTS/2 MPI processes with 2 OpenMP threads each.
+
 Installation:
 -------------
 
@@ -55,17 +57,17 @@ On Legion we use environment modules and so the instructions will be written ass
 
 1) Unpack the code somewhere.
 
-2) Add the path to the code into $PATH (on Legion this is done as part of the "sge" module), and set the $GERUN_PATH to the same location.
+2) Add the path to the code into $PATH (on Legion this is done as part of the "sge" module), and set the $GERUN\_PATH to the same location.
 
-3) Inside the module for each MPI implementation set $GERUN_LAUNCHER to the appropriate version for that MPI.
+3) Inside the module for each MPI implementation set $GERUN\_LAUNCHER to the appropriate version for that MPI.
 
 Provided with the code are:
 
-| MPI              | $GERUN_LAUNCHER | Wrapper file       |
+| MPI              | $GERUN\_LAUNCHER | Wrapper file       |
 |:---------------- |:--------------- |:------------------ |
 | Qlogic           | qlc             | gerun-qlc          |
 | Intel            | intel           | gerun-intel        |
 | OpenMPI          | openmpi         | gerun-openmpi      |
 | OpenMPI with SGE | openmpi-sge     | genrun-openmpi-sge |
 
-To add a new MPI implementation, you simply need to create a new gerun-<whatver> wrapper and set $GERUN_LAUNCHER appropriately.
+To add a new MPI implementation, you simply need to create a new gerun-<whatver> wrapper and set $GERUN\_LAUNCHER appropriately.
