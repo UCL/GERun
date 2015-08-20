@@ -48,7 +48,7 @@ export OMP_NUM_THREADS=2
 gerun $HOME/src/madscience/mad
 ```
 
-Gerun will then run $NSLOTS/2 MPI processes with 2 OpenMP threads each.
+GERun will then run $NSLOTS/2 MPI processes with 2 OpenMP threads each.
 
 Installation:
 -------------
