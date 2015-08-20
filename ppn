@@ -3,6 +3,8 @@
 # This script calculates the number of processors per node.
 # Dr Owain Kenway, UCL
 
+# For licensing terms, see LICENSE.txt
+
 NSLOTS=${NSLOTS:-1}
 NHOSTS=${NHOSTS:-1}
 
