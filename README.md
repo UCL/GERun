@@ -18,19 +18,33 @@ This version is the public, tidied up version of the code.
 
 GERun allows users to replace complicated formulations like:
 
-```
+```bash
 mpirun -m $TMPDIR/machines -np $NSLOTS $HOME/src/madscience/mad
 ```
 
 or
 
-```
+```bash
 mpirun --rsh=ssh -machinefile $TMPDIR/machines -np $NSLOTS $HOME/src/madscience/mad
 ```
 
 depending on their MPI implementation with:
 
+```bash
+gerun $HOME/src/madscience/mad
 ```
+
+GERun version iii supports mixed mode codes in some MPI environments (Intel MPI, OpenMPI *without SGE integration*) by running $NSLOTS/$OMP\_NUM\_THREADS MPI tasks, and provides a tool "ppn" which calculates the number of processors per node.  This means that on the new Research Computing OS software stack you can portably (over the node types in the cluster) run with OpenMP threads within a node, MPI between a node should you desire by doing this:
+
+```bash
+export OMP_NUM_THREADS=`ppn`
+gerun $HOME/src/madscience/mad
+```
+
+Alternatively, if you always want to run 2 threads per MPI task you can do this:
+
+```bash
+export OMP_NUM_THREADS=2
 gerun $HOME/src/madscience/mad
 ```
 
