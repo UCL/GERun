@@ -43,5 +43,6 @@ else
   echo "WARNING: No machine file."
   echo "You appear to be running outside of a Grid Engine scheduled environment."
   echo "Falling back to basic mpirun."
+  echo
   mpirun $*
 fi 
