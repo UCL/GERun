@@ -22,6 +22,9 @@ then
   GERUN_SILENT=yes
 fi
 
+# Make sure it's available in launcher scripts if need be.
+export GERUN_SILENT
+
 # Check to see if we have a customised message and if so use it rather 
 if [ "$GERUN_SILENT" != "yes" ]
 then 
