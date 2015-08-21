@@ -37,9 +37,11 @@ if [ -f $TMPDIR/machines ]
 then
   echo "Contents of machinefile:"
   cat $TMPDIR/machines
+  echo
+  $GERUN_PATH/gerun-$GERUN_LAUNCHER $*
 else
   echo "WARNING: No machine file."
+  echo "You appear to be running outside of a Grid Engine scheduled environment."
+  echo "Falling back to basic mpirun."
+  mpirun $*
 fi 
-echo
-
-$GERUN_PATH/gerun-$GERUN_LAUNCHER $*
