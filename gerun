@@ -8,8 +8,6 @@
 # This variable should be set by MPI modules:
 # GERUN_LAUNCHER
 
-echo 
-
 # Check to see if we have a customised message and if so use it rather 
 # than the default.
 if [ -e $GERUN_PATH/local-message ]
