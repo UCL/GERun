@@ -5,4 +5,13 @@
 
 # For licensing terms, see LICENSE.txt
 
-mpirun $*
+export OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
+
+if [ $OMP_NUM_THREADS != "1"]
+then
+  echo "Error - you are attempting to launch a mixed mode code on a version of" 
+  echo "OpenMPI built with GE integration.  This will not work correctly."
+  exit 1 
+else
+  mpirun $*
+fi
