@@ -8,13 +8,29 @@
 # This variable should be set by MPI modules:
 # GERUN_LAUNCHER
 
-# Check to see if we have a customised message and if so use it rather 
-# than the default.
-if [ -e $GERUN_PATH/local-message ]
+# Make it possible to disable all output from GERun.
+# This is to make it work with some testing regimes.
+# To disable output, set GERUN_SILENT=yes
+GERUN_SILENT=${GERUN_SILENT:-no}
+
+# To lowercase (only works in bash 4+)
+GERUN_SILENT=${GERUN_SILENT,,}
+
+# Make sure user hasn't done something else odd.
+if [ "$GERUN_SILENT" == "true" ]
 then
-  cat $GERUN_PATH/local-message 
-else
+  GERUN_SILENT=yes
+fi
+
+# Check to see if we have a customised message and if so use it rather 
+if [ "GERUN_SILENT" != "yes" ]
+then 
+  if [ -e $GERUN_PATH/local-message ]
+  then
+    cat $GERUN_PATH/local-message 
+  else
   cat $GERUN_PATH/gerun-message
+  fi
 fi
 
 # We need to support mixed mode code on new Legion.
@@ -25,22 +41,31 @@ GERUN_PROCS=$[$NSLOTS/$OMP_NUM_THREADS]
 export OMP_NUM_THREADS
 export GERUN_PROCS
 
-echo
-echo "Using environment: $GERUN_LAUNCHER"
-echo "Running on $GERUN_PROCS slots."
-echo "TMPDIR=$TMPDIR"
-echo
+if [ "GERUN_SILENT" != "yes" ]
+then 
+  echo
+  echo "Using environment: $GERUN_LAUNCHER"
+  echo "Running on $GERUN_PROCS slots."
+  echo "TMPDIR=$TMPDIR"
+  echo
+fi
 
 if [ -f $TMPDIR/machines ]
 then
-  echo "Contents of machinefile:"
-  cat $TMPDIR/machines
-  echo
+  if [ "GERUN_SILENT" != "yes" ]
+  then 
+    echo "Contents of machinefile:"
+    cat $TMPDIR/machines
+    echo
+  fi
   $GERUN_PATH/gerun-$GERUN_LAUNCHER $*
 else
-  echo "WARNING: No machine file."
-  echo "You appear to be running outside of a Grid Engine scheduled environment."
-  echo "Falling back to basic mpirun."
-  echo
+  if [ "GERUN_SILENT" != "yes" ]
+  then 
+    echo "WARNING: No machine file."
+    echo "You appear to be running outside of a Grid Engine scheduled environment."
+    echo "Falling back to basic mpirun."
+    echo
+  fi
   mpirun $*
 fi 
