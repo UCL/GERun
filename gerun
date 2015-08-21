@@ -10,7 +10,14 @@
 
 echo 
 
-cat $GERUN_PATH/gerun-message
+# Check to see if we have a customised message and if so use it rather 
+# That the default.
+if [ -e $GERUN_PATH/local-message ]
+then
+  cat $GERUN_PATH/local-message 
+else
+  cat $GERUN_PATH/gerun-message
+fi
 
 # We need to support mixed mode code on new Legion.
 
