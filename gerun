@@ -23,7 +23,7 @@ then
 fi
 
 # Check to see if we have a customised message and if so use it rather 
-if [ "GERUN_SILENT" != "yes" ]
+if [ "$GERUN_SILENT" != "yes" ]
 then 
   if [ -e $GERUN_PATH/local-message ]
   then
@@ -41,7 +41,7 @@ GERUN_PROCS=$[$NSLOTS/$OMP_NUM_THREADS]
 export OMP_NUM_THREADS
 export GERUN_PROCS
 
-if [ "GERUN_SILENT" != "yes" ]
+if [ "$GERUN_SILENT" != "yes" ]
 then 
   echo
   echo "Using environment: $GERUN_LAUNCHER"
@@ -52,7 +52,7 @@ fi
 
 if [ -f $TMPDIR/machines ]
 then
-  if [ "GERUN_SILENT" != "yes" ]
+  if [ "$GERUN_SILENT" != "yes" ]
   then 
     echo "Contents of machinefile:"
     cat $TMPDIR/machines
@@ -60,7 +60,7 @@ then
   fi
   $GERUN_PATH/gerun-$GERUN_LAUNCHER $*
 else
-  if [ "GERUN_SILENT" != "yes" ]
+  if [ "$GERUN_SILENT" != "yes" ]
   then 
     echo "WARNING: No machine file."
     echo "You appear to be running outside of a Grid Engine scheduled environment."
