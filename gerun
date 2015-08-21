@@ -11,7 +11,7 @@
 echo 
 
 # Check to see if we have a customised message and if so use it rather 
-# That the default.
+# than the default.
 if [ -e $GERUN_PATH/local-message ]
 then
   cat $GERUN_PATH/local-message 
