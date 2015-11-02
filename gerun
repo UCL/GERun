@@ -64,11 +64,21 @@ then
   $GERUN_PATH/gerun-$GERUN_LAUNCHER $*
 else
   if [ "$GERUN_SILENT" != "yes" ]
-  then 
-    echo "WARNING: No machine file."
-    echo "You appear to be running outside of a Grid Engine scheduled environment."
-    echo "Falling back to basic mpirun."
-    echo
+  then
+    if [ ${PE:0:3} == "smp" ] 
+    then
+      echo "WARNING: SMP environment detected."
+      echo "You appear to be trying to run an MPI package inside the smp parallel"
+      echo "environment (i.e. you have requested -pe smp in your job script)."
+      echo "There is no machine file available - running on only one node."
+      echo "Falling back to basic mpirun."
+      echo
+    else
+      echo "WARNING: No machine file."
+      echo "You appear to be running outside of a Grid Engine scheduled environment."
+      echo "Falling back to basic mpirun."
+      echo
+    if
   fi
   mpirun $*
 fi 
