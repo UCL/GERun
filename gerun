@@ -48,7 +48,9 @@ if [ "$GERUN_SILENT" != "yes" ]
 then 
   echo
   echo "Using environment: $GERUN_LAUNCHER"
-  echo "Running on $GERUN_PROCS slots."
+  echo "Running on $NSLOTS slots:"
+  printf "  %3d MPI tasks\n" $GERUN_PROCS
+  printf "  %3d threads per task\n" $OMP_NUM_THREADS
   echo "TMPDIR=$TMPDIR"
   echo
 fi
