@@ -146,7 +146,7 @@ end
 # Strip user script from args and run it.
 # This will result in a warning in STDERR that you can ignore.
 if length(ARGS) > 0
-  GE_script = ARGS[1]
+  GE_script = joinpath(ENV["PWD"], ARGS[1])
   if length(ARGS) > 1
     ARGS=ARGS[2:length(ARGS)]
   else 
