@@ -1,0 +1,161 @@
+#!/usr/bin/env julia
+
+# Parallel launcher for Julia jobs on UCL resources (Legion/Grace)
+# !! BETA
+# Dr Owain Kenway, October 2016
+
+# Julia supports parallel launching of jobs via SSH.  Unfortunately, invoking
+# julia --machinefile -p <n> on Legion results in communication errors.
+# Weirdly, adding processors from within Julia is fine.  This means we need
+# to be a bit sneaky, so this wrapper script processes the SGE environment,
+# launches the appropriate worker processes, pulls the user script name out of
+# the arguments and then launches the user's script with the remaining 
+# arguments.
+
+# This results in output in stderr of the form:
+# WARNING: imported binding for ARGS overwritten in module Main
+# This can safely be ignored.
+
+# For security reasons it's a really good idea to have Julia 0.5.0 or higher 
+# when doing parallel workers.  This is true on any computer connected to the
+# Internet while running Julia.
+
+GE_JULIA_varr=split(string(VERSION),".")
+
+if parse(GE_JULIA_varr[1]) > 0 ||parse(GE_JULIA_varr[2]) >= 5
+  # do nothing
+else
+  # Exit to protect the users.
+  write(STDERR, "ERROR: need Julia 0.5.0 or greater.\n")
+  exit(1)
+end
+
+
+GE_nprocs=1
+GE_job=false
+GE_tmpdir=""
+GE_dir="/shared/ucl/apps/GERun"
+
+# Do we want to tunnel Julia comms over SSH?
+# This is not strictly necessary due to cookies but is a good idea.
+# Unfortunately it's unreliable on Legion.
+GE_ssh_tunnel=false
+
+try
+  GE_ssh_tunnel=(ENV["GERUN_SSH_TUNNEL"] == "true")
+catch
+  # do nothing
+end
+
+# Do we want to restrict ports for Local multinode processes to loopback?
+# It's not clear whether this will break things - to investigate!
+GE_restrict_ports=false
+
+try
+  GE_restrict_ports=(ENV["GERUN_RESTRICT_PORTS"] == "true")
+catch
+  # do nothing
+end
+
+
+GE_silent=false
+
+# Create a print statement that checks GE_silent.
+GE_print(t)=if GE_silent == false
+  println(t)
+end
+
+try
+  GE_silent=(ENV["GERUN_SILENT"] == "true")
+catch
+  # do nothing
+end
+
+# Print welcome message.
+try
+  GE_dir=ENV["GERUN_PATH"]
+catch
+  # do nothing
+end
+
+if isfile(GE_dir * "/local-message-julia")
+  f = open(GE_dir * "/local-message-julia")
+  t = readstring(f)
+  close(f)
+  GE_print(t)
+else 
+  if isfile(GE_dir * "/gerun-message-julia")
+    f = open(GE_dir * "/gerun-message-julia")
+    t = readstring(f)
+    close(f)
+    GE_print(t)
+  end
+end
+
+# Get TMPDIR.  As a side effect, we know this is a local run if no TMPDIR is
+# set.
+try
+  GE_tmpdir=ENV["TMPDIR"]
+  GE_job=true
+catch
+  GE_print("No TMPDIR set, local run")
+end
+
+# We are inside GE.
+
+if GE_job
+    try 
+      GE_nprocs=parse(ENV["NSLOTS"])
+    catch
+      # do nothing
+      # If we get here, we have a TMPDIR but are outside GE.
+      # This could happen but the code will fallback to local workers only
+      # As the machinefile test will fail.
+    end
+    GE_print(string("Detected ", GE_nprocs, " slots."))
+    GE_machinefile=GE_tmpdir * "/machines"
+    GE_print(string("Machinefile should be ", GE_machinefile))
+
+    # If there's a machinefile, launch the workers listed in it.  Note, if
+    # the user has manually made NSLOTS different from the number of entries
+    # this will still launch all the entries in the machinefile.
+    # We only care about $NSLOTS in the SMP environment.
+    if isfile(GE_machinefile)
+      GE_print("Machinefile located.")
+      GE_MACHINES=readdlm(GE_machinefile)
+      GE_print(string(GE_MACHINES))
+      for a in GE_MACHINES
+
+        # Check to see if the entry is for the local machine or a remove one.
+        # Launch local processes by forking, remote by SSH.
+        if (a == gethostname()) # do local launch without ssh
+          GE_print(string("Adding local worker: ", a))
+          addprocs(1, restrict=GE_restrict_ports)
+        else
+          GE_print(string("Adding remote worker: ", a))
+          addprocs([a]; tunnel=GE_ssh_tunnel, max_parallel=1, sshflags=``)
+        end
+      end
+    else
+      # If we are here, we are in an SMP environment.
+      GE_print("No machine file detected, lauching local processes only.")
+      addprocs(GE_nprocs, restrict=true)
+    end
+end
+
+# Strip user script from args and run it.
+# This will result in a warning in STDERR that you can ignore.
+if length(ARGS) > 0
+  GE_script = ARGS[1]
+  if length(ARGS) > 1
+    ARGS=ARGS[2:length(ARGS)]
+  else 
+    ARGS=[]
+  end
+
+  # Run the user script.
+  include(GE_script)
+else
+  write(STDERR, "No user script specified - exiting.\n")
+  exit(1)
+end
