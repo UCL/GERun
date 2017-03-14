@@ -5,4 +5,4 @@
 
 # For licensing terms, see LICENSE.txt
 
-mpirun --rsh=ssh -machinefile $TMPDIR/machines -np $GERUN_PROCS -perhost $GERUN_PROCS_PPN $*
+mpirun --rsh=ssh -machinefile $TMPDIR/machines -np $GERUN_PROCS -rr $*

@@ -42,13 +42,8 @@ OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
 NSLOTS=${NSLOTS:-1}
 GERUN_PROCS=$[$NSLOTS/$OMP_NUM_THREADS]
 
-# Work out how many processes per node for some MPIs.
-NHOSTS=${NHOSTS:-1}
-GERUN_PROCS_PPN=$[$NSLOTS/$NHOSTS]
-
 export OMP_NUM_THREADS
 export GERUN_PROCS
-export GERUN_PROCS_PPN
 
 if [ "$GERUN_SILENT" != "yes" ]
 then 
