@@ -64,6 +64,10 @@ then
     cat $TMPDIR/machines
     echo
   fi
+
+# Create a sorted, unique machine file for mpiruns which work better with that.
+  sort -u $TMPDIR/machines > $TMPDIR/machines.unique
+
   $GERUN_PATH/gerun-$GERUN_LAUNCHER $*
 else
   if [ "$GERUN_SILENT" != "yes" ]
