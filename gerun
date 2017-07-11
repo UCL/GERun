@@ -81,7 +81,7 @@ else
       echo "Falling back to basic mpirun."
       echo
     else
-      echo "WARNING: No machine file."
+      echo "WARNING: No machine file found in $TMPDIR."
       echo "You appear to be running outside of a Grid Engine scheduled environment."
       echo "Falling back to basic mpirun."
       echo
