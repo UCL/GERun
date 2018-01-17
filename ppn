@@ -8,4 +8,4 @@
 NSLOTS=${NSLOTS:-1}
 NHOSTS=${NHOSTS:-1}
 
-echo $[$NSLOTS/$NHOSTS]
+echo $((NSLOTS/NHOSTS))
