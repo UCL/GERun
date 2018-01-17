@@ -5,4 +5,9 @@
 
 # For licensing terms, see LICENSE.txt
 
-mpirun --rsh=ssh -machinefile $TMPDIR/machines.unique -np $GERUN_PROCS -rr $*
+mpirun \
+  --rsh=ssh \
+  -machinefile "$TMPDIR/machines.unique" \
+  -np "$GERUN_PROCS" \
+  -rr \
+  "$@"

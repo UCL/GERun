@@ -6,4 +6,9 @@
 # For licensing terms, see LICENSE.txt
 
 # Fail and print useful error if no MPI loaded.
-echo You don\'t appear to have an MPI implementation loaded.  Exiting.
+echo "Error: You don't appear to have an MPI implementation loaded.  Exiting." >&2
+
+if declare -f module >/dev/null; then
+  echo ""
+  module list -t
+fi

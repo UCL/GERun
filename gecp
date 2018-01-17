@@ -9,14 +9,27 @@
 
 # For licensing terms, see LICENSE.txt
 
-sort -u $TMPDIR/machines > $TMPDIR/uniqmachines
+if [[ ! -d "$TMPDIR" ]]; then
+  echo "Error: no TMPDIR set: gecp cannot find \$TMPDIR/machines"
+  exit 2
+fi
 
-cat $TMPDIR/uniqmachines
+if [[ ! -r "$TMPDIR/machines" ]]; then
+  echo "Error: no machinefile: gecp cannot find $TMPDIR/machines"
+  exit 3
+fi
 
-for a in `cat $TMPDIR/uniqmachines`
-do
-  qrsh -inherit $a "cd `pwd`; /bin/cp $*" &
-  pids="$pids $!"
+sort -u "$TMPDIR/machines" > "$TMPDIR/uniqmachines"
+
+echo "Using nodes:" >&2
+cat "$TMPDIR/uniqmachines" >&2
+
+declare -a pids
+for node in $(cat "$TMPDIR/uniqmachines"); do
+  # TODO Think of a way to fix this --v
+  # WARN: This will break if any of the command line arguments contain spaces
+  qrsh -inherit "$node" "cd \"$(pwd)\"; /bin/cp $*" &
+  pids+=("$!")
 done
 
-wait $pids
+wait "${pids[@]}"
