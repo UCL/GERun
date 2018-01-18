@@ -11,69 +11,63 @@
 # Make it possible to disable all output from GERun.
 # This is to make it work with some testing regimes.
 # To disable output, set GERUN_SILENT=yes
-GERUN_SILENT=${GERUN_SILENT:-no}
+GERUN_SILENT="${GERUN_SILENT:-no}"
 
 # To lowercase (only works in bash 4+)
-GERUN_SILENT=${GERUN_SILENT,,}
+GERUN_SILENT="${GERUN_SILENT,,}"
 
 # Make sure user hasn't done something else odd.
-if [ "$GERUN_SILENT" == "true" ]
-then
+if [[ "$GERUN_SILENT" == "true" ]]; then
   GERUN_SILENT=yes
 fi
 
 # Make sure it's available in launcher scripts if need be.
 export GERUN_SILENT
 
+
 # Check to see if we have a customised message and if so use it rather 
-if [ "$GERUN_SILENT" != "yes" ]
-then 
-  if [ -e $GERUN_PATH/local-message ]
+if [[ "$GERUN_SILENT" != "yes" ]]; then 
+  if [[ -s "$GERUN_PATH/local-message" ]]
   then
-    cat $GERUN_PATH/local-message 
+    cat "$GERUN_PATH/local-message"
   else
-  cat $GERUN_PATH/gerun-message
+    cat "$GERUN_PATH/gerun-message"
   fi
 fi
 
 # We need to support mixed mode code on new Legion.
 
-OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
-NSLOTS=${NSLOTS:-1}
-GERUN_PROCS=$[$NSLOTS/$OMP_NUM_THREADS]
+OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
+NSLOTS="${NSLOTS:-1}"
+GERUN_PROCS="$((NSLOTS/OMP_NUM_THREADS))"
 
 export OMP_NUM_THREADS
 export GERUN_PROCS
 
-if [ "$GERUN_SILENT" != "yes" ]
-then 
+if [[ "$GERUN_SILENT" != "yes" ]]; then 
   echo
   echo "Using environment: $GERUN_LAUNCHER"
   echo "Running on $NSLOTS slots:"
-  printf "  %3d MPI tasks\n" $GERUN_PROCS
-  printf "  %3d threads per task\n" $OMP_NUM_THREADS
+  printf "  %3d MPI tasks\n" "$GERUN_PROCS"
+  printf "  %3d threads per task\n" "$OMP_NUM_THREADS"
   echo "TMPDIR=$TMPDIR"
   echo
 fi
 
-if [ -f $TMPDIR/machines ]
-then
-  if [ "$GERUN_SILENT" != "yes" ]
-  then 
+if [[ -s "$TMPDIR/machines" ]]; then
+  if [[ "$GERUN_SILENT" != "yes" ]]; then
     echo "Contents of machinefile:"
-    cat $TMPDIR/machines
+    cat "$TMPDIR/machines"
     echo
   fi
 
 # Create a sorted, unique machine file for mpiruns which work better with that.
-  sort -u $TMPDIR/machines > $TMPDIR/machines.unique
+  sort -u "$TMPDIR/machines" > "$TMPDIR/machines.unique"
 
-  $GERUN_PATH/gerun-$GERUN_LAUNCHER $*
+  "$GERUN_PATH/gerun-$GERUN_LAUNCHER" "$@"
 else
-  if [ "$GERUN_SILENT" != "yes" ]
-  then
-    if [ "${PE:0:3}" == "smp" ] 
-    then
+  if [[ "$GERUN_SILENT" != "yes" ]]; then
+    if [[ "${PE:0:3}" == "smp" ]]; then
       echo "WARNING: SMP environment detected."
       echo "You appear to be trying to run an MPI package inside the smp parallel"
       echo "environment (i.e. you have requested -pe smp in your job script)."
@@ -87,5 +81,5 @@ else
       echo
     fi
   fi
-  mpirun $*
-fi 
+  mpirun "$@"
+fi
