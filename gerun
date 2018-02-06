@@ -8,6 +8,8 @@
 # This variable should be set by MPI modules:
 # GERUN_LAUNCHER
 
+set -e
+
 # Make it possible to disable all output from GERun.
 # This is to make it work with some testing regimes.
 # To disable output, set GERUN_SILENT=yes
