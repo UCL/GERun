@@ -10,17 +10,11 @@
 
 set -e
 
-# Define functions to output to stderr.
-stderrmsg() { 
-    echo "GERun: $@" 1>&2 
-}
-stderrprintf() {
-    printf "GERun: $@" 1>&2
-}
+# See if GERUN_PATH is set, otherwise guess it out from $0.
+export GERUN_PATH=${GERUN_PATH:-$(dirname $(readlink -f $(which $0)))}
 
-stderrcat() {
-    awk '{print "GERun: " $0}' "$@" 1>&2
-}
+# Load function definitions.
+source $GERUN_PATH/gerunlib.sh
 
 # Make it possible to disable all output from GERun.
 # This is to make it work with some testing regimes.
