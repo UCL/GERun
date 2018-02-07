@@ -15,11 +15,11 @@ stderrmsg() {
     echo "GERun: $@" 1>&2 
 }
 stderrprintf() {
-    printf "GERun $@" 1>&2
+    printf "GERun: $@" 1>&2
 }
 
 stderrcat() {
-    cat "$@" 1>&2
+    awk '{print "GERun: " $0}' "$@" 1>&2
 }
 
 # Make it possible to disable all output from GERun.
