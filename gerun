@@ -18,7 +18,8 @@ source $GERUN_PATH/gerunlib.sh
 
 stderrmsg 
 stderrmsg "Note: Lines like this one prefixed with \"GERun:\" are for debugging"
-stderrmsg "      purposes only and you do not need to report them to rc-support"stderrmsg "      unless your job fails for other reasons."
+stderrmsg "      purposes only and you do not need to report them to rc-support"
+stderrmsg "      unless your job fails for other reasons."
 stderrmsg 
 
 # Make it possible to disable all output from GERun.
