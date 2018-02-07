@@ -5,12 +5,20 @@
 
 # For licensing terms, see LICENSE.txt
 
+set -e
+
+# See if GERUN_PATH is set, otherwise guess it out from $0.
+export GERUN_PATH="${GERUN_PATH:-$(dirname $(readlink -f $(which $0)))}"
+
+# Load function definitions.
+source $GERUN_PATH/gerunlib.sh
+
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 
 if [[ "$OMP_NUM_THREADS" != "1" ]]; then
-  echo "ERROR: You are attempting to launch a mixed mode code on a version of" 
-  echo "OpenMPI built with GE integration.  This will not work correctly."
-  echo "Exiting."
+  stderrmsg "ERROR: You are attempting to launch a mixed mode code on a version of" 
+  stderrmsg "OpenMPI built with GE integration.  This will not work correctly."
+  stderrmsg "Exiting."
   exit 1 
 else
   mpirun "$@"
