@@ -8,6 +8,20 @@
 # This variable should be set by MPI modules:
 # GERUN_LAUNCHER
 
+set -e
+
+# See if GERUN_PATH is set, otherwise guess it out from $0.
+export GERUN_PATH="${GERUN_PATH:-$(dirname $(readlink -f $(which $0)))}"
+
+# Load function definitions.
+source $GERUN_PATH/gerunlib.sh
+
+stderrmsg 
+stderrmsg "Note: Lines like this one prefixed with \"GERun:\" are for debugging"
+stderrmsg "      purposes only and you do not need to report them to rc-support"
+stderrmsg "      unless your job fails for other reasons."
+stderrmsg 
+
 # Make it possible to disable all output from GERun.
 # This is to make it work with some testing regimes.
 # To disable output, set GERUN_SILENT=yes
@@ -29,9 +43,9 @@ export GERUN_SILENT
 if [[ "$GERUN_SILENT" != "yes" ]]; then 
   if [[ -s "$GERUN_PATH/local-message" ]]
   then
-    cat "$GERUN_PATH/local-message"
+    stderrcat "$GERUN_PATH/local-message"
   else
-    cat "$GERUN_PATH/gerun-message"
+    stderrcat "$GERUN_PATH/gerun-message"
   fi
 fi
 
@@ -45,20 +59,20 @@ export OMP_NUM_THREADS
 export GERUN_PROCS
 
 if [[ "$GERUN_SILENT" != "yes" ]]; then 
-  echo
-  echo "Using environment: $GERUN_LAUNCHER"
-  echo "Running on $NSLOTS slots:"
-  printf "  %3d MPI tasks\n" "$GERUN_PROCS"
-  printf "  %3d threads per task\n" "$OMP_NUM_THREADS"
-  echo "TMPDIR=$TMPDIR"
-  echo
+  stderrmsg
+  stderrmsg "Using environment: $GERUN_LAUNCHER"
+  stderrmsg "Running on $NSLOTS slots:"
+  stderrprintf "  %3d MPI tasks\n" "$GERUN_PROCS"
+  stderrprintf "  %3d threads per task\n" "$OMP_NUM_THREADS"
+  stderrmsg "TMPDIR=$TMPDIR"
+  stderrmsg
 fi
 
 if [[ -s "$TMPDIR/machines" ]]; then
   if [[ "$GERUN_SILENT" != "yes" ]]; then
-    echo "Contents of machinefile:"
-    cat "$TMPDIR/machines"
-    echo
+    stderrmsg "Contents of machinefile:"
+    stderrcat "$TMPDIR/machines"
+    stderrmsg
   fi
 
 # Create a sorted, unique machine file for mpiruns which work better with that.
@@ -68,17 +82,17 @@ if [[ -s "$TMPDIR/machines" ]]; then
 else
   if [[ "$GERUN_SILENT" != "yes" ]]; then
     if [[ "${PE:0:3}" == "smp" ]]; then
-      echo "WARNING: SMP environment detected."
-      echo "You appear to be trying to run an MPI package inside the smp parallel"
-      echo "environment (i.e. you have requested -pe smp in your job script)."
-      echo "There is no machine file available - running on only one node."
-      echo "Falling back to basic mpirun."
-      echo
+      stderrmsg "WARNING: SMP environment detected."
+      stderrmsg "You appear to be trying to run an MPI package inside the smp parallel"
+      stderrmsg "environment (i.e. you have requested -pe smp in your job script)."
+      stderrmsg "There is no machine file available - running on only one node."
+      stderrmsg "Falling back to basic mpirun."
+      stderrmsg
     else
-      echo "WARNING: No machine file found in $TMPDIR."
-      echo "You appear to be running outside of a Grid Engine scheduled environment."
-      echo "Falling back to basic mpirun."
-      echo
+      stderrmsg "WARNING: No machine file found in $TMPDIR."
+      stderrmsg "You appear to be running outside of a Grid Engine scheduled environment."
+      stderrmsg "Falling back to basic mpirun."
+      stderrmsg
     fi
   fi
   mpirun "$@"
