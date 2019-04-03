@@ -15,10 +15,8 @@ source $GERUN_PATH/gerunlib.sh
 
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 
-GE_OMPI_OPTS=""
-
 if [[ "$OMP_NUM_THREADS" != "1" ]]; then
-  GE_OMPI_OPTS="--bynode"
+  mpirun --bynode "$@"
 else
-  mpirun ${GE_OMPI_OPTS} "$@"
+  mpirun  "$@"
 fi
