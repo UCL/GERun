@@ -15,11 +15,13 @@ source $GERUN_PATH/gerunlib.sh
 
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 
+GE_OMPI_OPTS=""
+
 if [[ "$OMP_NUM_THREADS" != "1" ]]; then
   stderrmsg "ERROR: You are attempting to launch a mixed mode code on a version of" 
   stderrmsg "OpenMPI built with GE integration.  This will not work correctly."
   stderrmsg "Exiting."
-  exit 1 
+  $GE_OMPI_OPTS="--bynode"
 else
-  mpirun "$@"
+  mpirun ${GE_OMPI_OPTS} "$@"
 fi
