@@ -16,7 +16,7 @@ source $GERUN_PATH/gerunlib.sh
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 
 if [[ "$OMP_NUM_THREADS" != "1" ]]; then
-  mpirun --bynode "$@"
+  mpirun --bynode -np "$GERUN_PROCS" "$@"
 else
   mpirun  "$@"
 fi
