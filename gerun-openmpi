@@ -5,7 +5,21 @@
 
 # For licensing terms, see LICENSE.txt
 
-mpirun \
+# See if GERUN_PATH is set, otherwise guess it out from $0.
+export GERUN_PATH="${GERUN_PATH:-$(dirname $(readlink -f $(which $0)))}"
+
+# Load function definitions.
+source $GERUN_PATH/gerunlib.sh
+
+mpirun_cmd=(mpirun \
   -machinefile "$TMPDIR/machines" \
   -np "$GERUN_PROCS" \
-  "$@"
+  "$@")
+
+if [[ "$GERUN_SILENT" != "yes" ]]; then
+  stderrmsg "GErun command being run:"
+  stderrmsg " ${mpirun_cmd[@]}"
+fi
+
+"${mpirun_cmd[@]}"
+
