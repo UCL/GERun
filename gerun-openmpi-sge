@@ -16,7 +16,15 @@ source $GERUN_PATH/gerunlib.sh
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 
 if [[ "$OMP_NUM_THREADS" != "1" ]]; then
-  mpirun --bynode -np "$GERUN_PROCS" "$@"
+  mpirun_cmd=(mpirun --bynode -np "$GERUN_PROCS" "$@")
 else
-  mpirun  "$@"
+  mpirun_cmd=(mpirun  "$@")
 fi
+
+if [[ "$GERUN_SILENT" != "yes" ]]; then
+  stderrmsg "GErun command being run:"
+  stderrmsg " ${mpirun_cmd[@]}"
+fi
+
+"${mpirun_cmd[@]}"
+
