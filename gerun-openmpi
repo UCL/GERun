@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# Parallel launcher for the various PEs on Legion.
+# Parallel launcher for the various PEs on UCL RC Systems.
 # Dr Owain Kenway, UCL
 
 # For licensing terms, see LICENSE.txt
+
+set -o
 
 # See if GERUN_PATH is set, otherwise guess it out from $0.
 export GERUN_PATH="${GERUN_PATH:-$(dirname $(readlink -f $(which $0)))}"
@@ -14,6 +16,8 @@ source $GERUN_PATH/gerunlib.sh
 mpirun_cmd=(mpirun \
   -machinefile "$TMPDIR/machines" \
   -np "$GERUN_PROCS" \
+  --map-by node \
+  --bind-to none \
   "$@")
 
 if [[ "$GERUN_SILENT" != "yes" ]]; then
