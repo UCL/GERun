@@ -18,7 +18,7 @@ export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 if [[ "$OMP_NUM_THREADS" != "1" ]]; then
   mpirun_cmd=(mpirun --map-by node --bind-to none -np "$GERUN_PROCS" "$@")
 else
-  mpirun_cmd=(mpirun --map-by node --bind-to none "$@")
+  mpirun_cmd=(mpirun "$@")
 fi
 
 if [[ "$GERUN_SILENT" != "yes" ]]; then
