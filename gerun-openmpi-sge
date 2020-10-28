@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Parallel launcher for the various PEs on Legion.
+# Parallel launcher for the various PEs on UCL RC Systems.
 # Dr Owain Kenway, UCL
 
 # For licensing terms, see LICENSE.txt
@@ -16,9 +16,9 @@ source $GERUN_PATH/gerunlib.sh
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 
 if [[ "$OMP_NUM_THREADS" != "1" ]]; then
-  mpirun_cmd=(mpirun --bynode -np "$GERUN_PROCS" "$@")
+  mpirun_cmd=(mpirun --map-by node --bind-to none -np "$GERUN_PROCS" "$@")
 else
-  mpirun_cmd=(mpirun  "$@")
+  mpirun_cmd=(mpirun "$@")
 fi
 
 if [[ "$GERUN_SILENT" != "yes" ]]; then
