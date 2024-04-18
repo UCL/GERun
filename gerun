@@ -49,6 +49,40 @@ if [[ "$GERUN_SILENT" != "yes" ]]; then
   fi
 fi
 
+# Importing exported shell functions through qrsh causes noisy error messages
+# Let's unexport the module functions in case they're set to be exported
+if [[ "$GERUN_SILENT" != "yes" ]]; then
+    stderrmsg "Removing export flag from module shell functions..."
+fi
+if declare -F module >/dev/null; then
+    export -nf module
+    if [[ "$GERUN_SILENT" != "yes" ]]; then
+        stderrmsg "  unexported: module"
+    fi
+fi
+if declare -F _module_raw >/dev/null; then
+    export -nf _module_raw
+    if [[ "$GERUN_SILENT" != "yes" ]]; then
+        stderrmsg "  unexported: _module_raw"
+    fi
+fi
+if declare -F ml >/dev/null; then
+    export -nf ml
+    if [[ "$GERUN_SILENT" != "yes" ]]; then
+        stderrmsg "  unexported: ml"
+    fi
+fi
+if declare -F switchml >/dev/null; then
+    export -nf switchml
+    if [[ "$GERUN_SILENT" != "yes" ]]; then
+        stderrmsg "  unexported: switchml"
+    fi
+fi
+if [[ "$GERUN_SILENT" != "yes" ]]; then
+    stderrmsg "Finished removing export flags."
+fi
+
+
 # We need to support mixed mode code on new Legion.
 
 OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
